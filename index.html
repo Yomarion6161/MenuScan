@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>MenuScan — AI ile Sağlıklı Yemek Seç</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<meta name="apple-touch-startup-image" content="splash.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MenuScan">
+<meta name="theme-color" content="#040407">
+<meta name="description" content="Restoran menüsünü fotoğrafla, yapay zeka hedefine göre en sağlıklı yemeği saniyeler içinde bulsun.">
+<meta property="og:title" content="MenuScan — AI Menü Analizi">
+<meta property="og:description" content="Restoran menüsünü fotoğrafla, AI hedefine göre en sağlıklı yemeği bulsun.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,500;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   MENUSCAN v3 — DESIGN SYSTEM
+   Aesthetic: Dark Luxury × Warm Gold × Organic
+   ══════════════════════════════════════════ */
+:root {
+  /* Core */
+  --ink:#040407; --ink2:#08080f; --ink3:#0d0d18;
+  --g1:rgba(255,255,255,.042); --g2:rgba(255,255,255,.07);
+  --gb:rgba(255,255,255,.088); --gb2:rgba(255,255,255,.17);
+  --text:#f0f0ff; --dim:rgba(240,240,255,.52); --faint:rgba(240,240,255,.2); --ghost:rgba(240,240,255,.1);
+  /* Brand */
+  --gold:#f5c518; --gold2:#d4a012; --golda:rgba(245,197,24,.12);
+  --green:#2dd17a; --greena:rgba(45,209,122,.1);
+  --red:#ff5a5a; --reda:rgba(255,90,90,.1);
+  --amber:#ffaa33; --sky:#5db8f5; --violet:#b39ddb;
+  /* Gradients */
+  --gg:linear-gradient(135deg,#f5c518 0%,#ff8c3a 55%,#ff6b9d 100%);
+  --ggreen:linear-gradient(135deg,#2dd17a,#1aaa5e);
+  --gred:linear-gradient(135deg,#ff5a5a,#ff8c3a);
+  /* Radii */
+  --r28:28px; --r24:24px; --r20:20px; --r16:16px; --r12:12px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ─── AMBIENT SYSTEM ─── */
+.amb{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;will-change:transform;animation:orbf ease-in-out infinite}
+.o1{width:720px;height:720px;background:radial-gradient(circle at 40% 40%,rgba(245,197,24,.1),transparent 65%);top:-220px;right:-160px;animation-duration:24s}
+.o2{width:580px;height:580px;background:radial-gradient(circle at 55% 50%,rgba(45,209,122,.08),transparent 65%);bottom:-140px;left:-120px;animation-duration:19s;animation-delay:-8s}
+.o3{width:460px;height:460px;background:radial-gradient(circle at 50% 50%,rgba(255,107,157,.06),transparent 65%);top:38%;left:22%;animation-duration:28s;animation-delay:-14s}
+.o4{width:300px;height:300px;background:radial-gradient(circle at 50% 50%,rgba(93,184,245,.06),transparent 65%);top:60%;right:5%;animation-duration:22s;animation-delay:-5s}
+@keyframes orbf{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(22px,-18px) scale(1.03)}50%{transform:translate(-15px,25px) scale(.97)}75%{transform:translate(-25px,-12px) scale(1.02)}}
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.032;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ─── GLASS SYSTEM ─── */
+.g{background:var(--g1);backdrop-filter:blur(52px) saturate(160%) brightness(1.06);-webkit-backdrop-filter:blur(52px) saturate(160%) brightness(1.06);border:1px solid var(--gb);border-radius:var(--r24);position:relative;overflow:hidden}
+.g::after{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gb2),transparent);pointer-events:none}
+.gs{position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.042) 0%,transparent 50%,rgba(255,255,255,.018) 100%);pointer-events:none;z-index:0;border-radius:inherit}
+.g>*{position:relative;z-index:1}
+
+/* ─── LAYOUT ─── */
+#app{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:92px}
+.page{display:none;flex-direction:column;gap:14px;padding:14px 13px;animation:pagein .5s cubic-bezier(.16,1,.3,1) both}
+.page.on{display:flex}
+@keyframes pagein{from{opacity:0;transform:translateY(20px) scale(.978)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ─── PAGE HEADER ─── */
+.ph{padding:54px 17px 6px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.ph-l{flex:1}
+.ey{font-size:10px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.pt{font-family:'Playfair Display',serif;font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.05}
+.pt em{font-style:italic;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ps{font-size:11px;color:var(--dim);margin-top:5px;font-weight:300;letter-spacing:.3px;line-height:1.55}
+.pbadge{padding:8px 13px;border-radius:22px;font-size:11px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:5px;flex-shrink:0;cursor:pointer;transition:all .2s;white-space:nowrap}
+.pb-g{background:var(--golda);border:1px solid rgba(245,197,24,.28);color:var(--gold)}
+.pb-p{background:var(--gg);color:#060300;box-shadow:0 4px 16px rgba(245,197,24,.28)}
+
+/* ─── LANDING PAGE ─── */
+#landing{position:fixed;inset:0;z-index:600;background:var(--ink);overflow-y:auto;display:flex;flex-direction:column;align-items:center}
+.land-hero{width:100%;max-width:430px;padding:60px 24px 0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.land-badge{padding:6px 16px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--golda);border:1px solid rgba(245,197,24,.25);color:var(--gold);margin-bottom:20px;animation:fadein .8s .2s both}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.land-icon{width:96px;height:96px;border-radius:30px;background:var(--gg);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 22px;box-shadow:0 24px 64px rgba(245,197,24,.38),0 0 0 1px rgba(255,255,255,.1);animation:breathe 4s ease-in-out infinite,fadein .8s .1s both}
+@keyframes breathe{0%,100%{transform:scale(1);box-shadow:0 24px 64px rgba(245,197,24,.38),0 0 0 1px rgba(255,255,255,.1)}50%{transform:scale(1.04);box-shadow:0 32px 80px rgba(245,197,24,.5),0 0 0 1px rgba(255,255,255,.14)}}
+.land-title{font-family:'Playfair Display',serif;font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1.05;margin-bottom:8px;animation:fadein .8s .25s both}
+.land-title em{font-style:italic;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.land-sub{font-size:15px;color:var(--dim);line-height:1.65;font-weight:300;max-width:300px;animation:fadein .8s .35s both}
+/* Social proof */
+.social-proof{display:flex;align-items:center;gap:10px;margin:22px 0;animation:fadein .8s .45s both}
+.sp-faces{display:flex}
+.sp-face{width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);margin-left:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(245,197,24,.2),rgba(255,107,157,.2))}
+.sp-face:first-child{margin-left:0}
+.sp-text{font-size:12px;color:var(--dim)}
+.sp-text strong{color:var(--text)}
+/* Feature pills */
+.feat-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin:18px 0 28px;animation:fadein .8s .5s both}
+.fp{padding:8px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:var(--dim);display:flex;align-items:center;gap:6px}
+.fp span{font-size:14px}
+/* CTA */
+.land-cta{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;animation:fadein .8s .6s both;padding:0 4px}
+.cta-main{width:100%;padding:17px;border-radius:20px;border:none;cursor:pointer;background:var(--gg);color:#060300;font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;letter-spacing:.3px;box-shadow:0 10px 32px rgba(245,197,24,.35);transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta-main:active{transform:scale(.97)}
+.cta-sub{width:100%;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--dim);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.cta-sub:active{background:rgba(255,255,255,.08)}
+.land-fine{font-size:10px;color:var(--faint);text-align:center;margin-bottom:40px;animation:fadein .8s .7s both}
+/* Screenshots mockup */
+.mockup-row{display:flex;gap:12px;padding:0 16px 40px;overflow-x:auto;margin-top:8px;animation:fadein .8s .5s both}
+.mockup-row::-webkit-scrollbar{display:none}
+.mock{flex-shrink:0;width:180px;height:320px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 60px rgba(0,0,0,.5);background:var(--ink2);display:flex;flex-direction:column}
+.mock-hd{padding:14px 14px 8px;background:linear-gradient(145deg,rgba(245,197,24,.06),transparent)}
+.mock-hd-t{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--gold)}
+.mock-hd-s{font-family:'Playfair Display',serif;font-size:16px;font-weight:800;margin-top:3px}
+.mock-cam{margin:0 10px;height:100px;border-radius:14px;background:rgba(0,0,0,.5);border:1.5px dashed rgba(245,197,24,.25);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;overflow:hidden}
+.mock-sl{position:absolute;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,rgba(245,197,24,.7),transparent);animation:scanMove 2.5s ease-in-out infinite}
+@keyframes scanMove{0%{top:20%;opacity:0}10%{opacity:1}50%{top:80%}90%{opacity:1}100%{top:20%;opacity:0}}
+.mock-res{padding:8px 10px;display:flex;flex-direction:column;gap:5px;flex:1}
+.mock-tag{font-size:8px;padding:3px 8px;border-radius:8px;font-weight:700;letter-spacing:.5px;display:inline-block}
+.mock-tag-g{background:var(--greena);color:var(--green);border:1px solid rgba(45,209,122,.2)}
+.mock-tag-r{background:var(--reda);color:var(--red);border:1px solid rgba(255,90,90,.2)}
+.mock-item{padding:5px 8px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between}
+.mock-item-t{font-size:8px;font-weight:600}
+.mock-item-k{font-size:7px;font-family:'JetBrains Mono',monospace;color:var(--gold)}
+/* Testimonials */
+.testimonials{width:100%;max-width:430px;padding:0 16px 40px;display:flex;flex-direction:column;gap:10px}
+.testi-title{font-size:12px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;font-weight:700;text-align:center;margin-bottom:4px}
+.testi{padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.testi-stars{font-size:12px;margin-bottom:6px;letter-spacing:2px}
+.testi-t{font-size:12px;color:var(--dim);line-height:1.6;font-style:italic}
+.testi-nm{font-size:10px;color:var(--faint);margin-top:6px;font-weight:600}
+
+/* ─── ONBOARDING ─── */
+#onb{position:fixed;inset:0;z-index:500;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:0 0 40px}
+.onb-wrap{width:100%;max-width:400px;padding:56px 24px 0;display:flex;flex-direction:column;align-items:center}
+.onb-prog{display:flex;gap:5px;justify-content:center;margin-bottom:32px;width:100%}
+.onb-p{height:3px;flex:1;border-radius:4px;background:rgba(255,255,255,.1);transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.onb-p.on{background:var(--gg)}
+.onb-p.done{background:rgba(245,197,24,.4)}
+.onb-step{display:none;flex-direction:column;gap:12px;width:100%;animation:pagein .4s cubic-bezier(.16,1,.3,1) both}
+.onb-step.show{display:flex}
+.onb-ico{font-size:36px;text-align:center;margin-bottom:6px}
+.onb-h{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:4px;letter-spacing:-.5px}
+.onb-h em{font-style:italic;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.onb-s{font-size:13px;color:var(--dim);text-align:center;margin-bottom:12px;line-height:1.6;font-weight:300}
+.onb-lbl{font-size:9px;color:var(--faint);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.onb-in{width:100%;padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
+.onb-in:focus{border-color:rgba(245,197,24,.5);box-shadow:0 0 0 3px rgba(245,197,24,.1)}
+.onb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.onb-opt{padding:14px 10px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--dim);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;line-height:1.55}
+.onb-opt.on{background:var(--golda);border-color:rgba(245,197,24,.4);color:var(--text)}
+.onb-opt-wide{grid-column:span 2;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:10px;font-size:12px}
+.onb-opt-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.onb-opt-info{}
+.onb-opt-t{font-weight:700}
+.onb-opt-s{font-size:10px;color:var(--faint);font-weight:400;margin-top:1px}
+.onb-row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.onb-next{width:100%;padding:15px;border-radius:18px;border:none;cursor:pointer;background:var(--gg);color:#060300;font-family:'Outfit',sans-serif;font-size:15px;font-weight:900;box-shadow:0 8px 28px rgba(245,197,24,.3);transition:all .2s;margin-top:6px;letter-spacing:.3px}
+.onb-next:active{transform:scale(.97)}
+.onb-skip{background:none;border:none;color:var(--faint);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;padding:10px;display:block;margin:0 auto}
+/* API KEY STEP */
+.key-info{padding:14px 15px;border-radius:16px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.18);display:flex;gap:12px;align-items:flex-start}
+.key-ic{font-size:20px;flex-shrink:0;margin-top:1px}
+.key-t{font-size:12px;color:var(--dim);line-height:1.6}
+.key-t a{color:var(--gold);text-decoration:none}
+.key-t b{color:var(--text)}
+.key-tog{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden}
+.key-tog .onb-in{border:none;background:transparent;border-radius:0;flex:1}
+.key-toggle-vis{padding:0 14px;background:transparent;border:none;cursor:pointer;color:var(--faint);font-size:18px;transition:color .2s;flex-shrink:0}
+.key-toggle-vis:hover{color:var(--gold)}
+.free-chip{font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;background:var(--greena);color:var(--green);border:1px solid rgba(45,209,122,.2)}
+
+/* ─── SCAN PAGE ─── */
+.scan-hero{border-radius:var(--r28);overflow:hidden;background:linear-gradient(145deg,rgba(245,197,24,.06),rgba(45,209,122,.04),rgba(255,107,157,.03));border:1px solid rgba(245,197,24,.16);box-shadow:0 24px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07);position:relative}
+.cam-area{margin:17px 17px 0;height:200px;border-radius:20px;background:rgba(0,0,0,.45);border:1.5px dashed rgba(245,197,24,.26);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.cam-area:hover{border-color:rgba(245,197,24,.5)}
+.cam-area:active{transform:scale(.97)}
+.caf{position:absolute;inset:0;background:rgba(245,197,24,.04);opacity:0;transition:opacity .2s}
+.cam-area:hover .caf{opacity:1}
+.scan-line{position:absolute;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,rgba(245,197,24,.8),transparent);box-shadow:0 0 12px rgba(245,197,24,.45);animation:sl 3s ease-in-out infinite}
+@keyframes sl{0%{top:18%;opacity:0}8%{opacity:1}50%{top:82%}92%{opacity:1}100%{top:18%;opacity:0}}
+.cn{position:absolute;width:18px;height:18px}
+.cn-tl{top:9px;left:9px;border-top:2.5px solid rgba(245,197,24,.65);border-left:2.5px solid rgba(245,197,24,.65);border-radius:4px 0 0 0}
+.cn-tr{top:9px;right:9px;border-top:2.5px solid rgba(245,197,24,.65);border-right:2.5px solid rgba(245,197,24,.65);border-radius:0 4px 0 0}
+.cn-bl{bottom:9px;left:9px;border-bottom:2.5px solid rgba(245,197,24,.65);border-left:2.5px solid rgba(245,197,24,.65);border-radius:0 0 0 4px}
+.cn-br{bottom:9px;right:9px;border-bottom:2.5px solid rgba(245,197,24,.65);border-right:2.5px solid rgba(245,197,24,.65);border-radius:0 0 4px 0}
+#prev-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:none}
+.cam-em{font-size:38px;position:relative;z-index:1;animation:bob 3.5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.cam-t{font-size:13px;font-weight:700;color:var(--gold);z-index:1;position:relative;margin-top:7px}
+.cam-s{font-size:10px;color:var(--dim);z-index:1;position:relative;margin-top:2px}
+#fi{display:none}
+/* Controls */
+.ctrl{padding:13px 17px 17px;display:flex;flex-direction:column;gap:10px}
+.clbl{font-size:9px;color:var(--faint);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+.chips{display:flex;gap:5px;overflow-x:auto;padding-bottom:1px}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--gb);background:var(--g1);color:var(--dim);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;letter-spacing:.3px}
+.chip.on{background:var(--golda);border-color:rgba(245,197,24,.38);color:var(--gold)}
+.al-row{display:flex;gap:5px;flex-wrap:wrap}
+.al{padding:6px 11px;border-radius:18px;font-size:10px;font-weight:700;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--faint);cursor:pointer;transition:all .2s;letter-spacing:.2px}
+.al.on{background:rgba(255,90,90,.1);border-color:rgba(255,90,90,.28);color:var(--red)}
+.scan-btn{width:100%;padding:15px;border-radius:18px;border:none;cursor:pointer;background:var(--gg);color:#060300;font-family:'Outfit',sans-serif;font-size:15px;font-weight:900;box-shadow:0 8px 28px rgba(245,197,24,.28);transition:all .25s;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:8px}
+.scan-btn:active{transform:scale(.97)}
+.scan-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+/* Loading */
+.load-ov{display:none;position:absolute;inset:0;z-index:20;background:rgba(4,4,7,.9);backdrop-filter:blur(12px);border-radius:var(--r28);flex-direction:column;align-items:center;justify-content:center;gap:13px}
+.load-ov.show{display:flex}
+.spin{width:48px;height:48px;border-radius:50%;border:3px solid rgba(245,197,24,.1);border-top-color:var(--gold);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.l-title{font-size:13px;font-weight:700;color:var(--gold)}
+.lsteps{width:185px;display:flex;flex-direction:column;gap:5px}
+.ls{font-size:10px;color:var(--faint);display:flex;align-items:center;gap:7px;transition:color .3s}
+.ls.done{color:var(--green)}.ls.act{color:var(--gold)}
+.ls-d{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* Results */
+.results{display:flex;flex-direction:column;gap:12px}
+.best-c{padding:20px 19px;background:linear-gradient(145deg,rgba(45,209,122,.09),rgba(26,170,94,.05));border-color:rgba(45,209,122,.25);box-shadow:0 16px 48px rgba(45,209,122,.07)}
+.bc-ey{font-size:9px;color:var(--green);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.bc-ey::after{content:'';flex:1;height:1px;background:rgba(45,209,122,.22)}
+.bc-nm{font-family:'Playfair Display',serif;font-size:21px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.bc-why{font-size:12px;color:var(--dim);line-height:1.65;margin-bottom:13px}
+.bc-macs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.bm{padding:9px 5px;text-align:center;border-radius:13px;background:rgba(45,209,122,.07);border:1px solid rgba(45,209,122,.13)}
+.bm-v{font-size:16px;font-weight:800;color:var(--green);font-family:'JetBrains Mono',monospace;letter-spacing:-.5px}
+.bm-l{font-size:8px;color:var(--dim);margin-top:2px;letter-spacing:.8px;text-transform:uppercase}
+.item-c{padding:14px 16px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.item-c:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.item-c:active{transform:scale(.98)}
+.ic-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.ic-nm{font-size:13px;font-weight:700;letter-spacing:-.2px;flex:1;line-height:1.3}
+.ic-sc{font-size:9px;font-weight:700;padding:4px 9px;border-radius:9px;flex-shrink:0;letter-spacing:.3px;white-space:nowrap}
+.sg{background:var(--greena);color:var(--green);border:1px solid rgba(45,209,122,.2)}
+.so{background:rgba(245,197,24,.1);color:var(--gold);border:1px solid rgba(245,197,24,.2)}
+.sb{background:var(--reda);color:var(--red);border:1px solid rgba(255,90,90,.2)}
+.ic-d{font-size:11px;color:var(--dim);line-height:1.55;margin-bottom:8px}
+.ic-ms{display:flex;gap:4px;flex-wrap:wrap}
+.ic-m{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:500;padding:3px 7px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:var(--dim)}
+.ic-m b{color:var(--text)}
+.ic-als{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.al-tag{font-size:9px;padding:2px 7px;border-radius:7px;background:var(--reda);color:var(--red);border:1px solid rgba(255,90,90,.18);font-weight:700;letter-spacing:.2px}
+.tip-c{padding:12px 15px;background:rgba(245,197,24,.055);border-color:rgba(245,197,24,.13);display:flex;align-items:center;gap:10px}
+.tip-ic{font-size:18px;flex-shrink:0}
+.tip-t{font-size:11px;color:var(--dim);line-height:1.55}
+.share-c{padding:15px 17px;background:linear-gradient(135deg,rgba(93,184,245,.07),rgba(179,157,219,.05));border-color:rgba(93,184,245,.18)}
+.share-row{display:flex;gap:7px;margin-top:9px}
+.sh-btn{flex:1;padding:10px;border-radius:13px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.05);color:var(--dim);font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.sh-btn:active{transform:scale(.94)}
+.reset-btn{width:100%;padding:12px;border-radius:16px;border:1.5px dashed rgba(255,255,255,.09);background:transparent;color:var(--faint);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.reset-btn:hover{border-color:rgba(245,197,24,.28);color:var(--gold)}
+/* No key banner */
+.no-key{padding:16px 17px;background:rgba(245,197,24,.07);border-color:rgba(245,197,24,.2);display:flex;gap:12px;align-items:center}
+.no-key-ic{font-size:24px;flex-shrink:0}
+.no-key-t{flex:1;font-size:12px;color:var(--dim);line-height:1.5}
+.no-key-t b{color:var(--text);display:block;margin-bottom:2px;font-size:13px}
+.no-key-btn{padding:8px 14px;border-radius:12px;border:none;background:var(--gg);color:#060300;font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0}
+
+/* ─── HISTORY ─── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st{padding:13px 9px;text-align:center;border-radius:19px}
+.st-ic{font-size:20px;margin-bottom:4px}
+.st-v{font-size:20px;font-weight:800;letter-spacing:-.8px;font-family:'JetBrains Mono',monospace}
+.st-l{font-size:8px;color:var(--faint);margin-top:2px;letter-spacing:.8px;text-transform:uppercase}
+.h-item{padding:13px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:transform .2s}
+.h-item:active{transform:scale(.98)}
+.h-th{width:48px;height:48px;border-radius:13px;flex-shrink:0;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden}
+.h-th img{width:100%;height:100%;object-fit:cover}
+.h-info{flex:1}
+.h-nm{font-size:12px;font-weight:700;letter-spacing:-.2px}
+.h-dt{font-size:10px;color:var(--dim);margin-top:2px}
+.h-pk{font-size:9px;color:var(--green);margin-top:3px;background:var(--greena);border:1px solid rgba(45,209,122,.15);padding:2px 7px;border-radius:7px;display:inline-block;font-weight:700}
+.h-arr{font-size:16px;color:var(--faint)}
+
+/* ─── PREMIUM ─── */
+.us-card{padding:16px 18px}
+.us-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.us-l{font-size:11px;color:var(--dim);font-weight:600}
+.us-r{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:600}
+.us-bar{height:5px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+.us-fill{height:100%;border-radius:6px;background:var(--gg);transition:width .9s cubic-bezier(.34,1.56,.64,1)}
+.pr-hero{padding:20px 19px;background:linear-gradient(145deg,rgba(245,197,24,.09),rgba(255,140,60,.06),rgba(255,107,157,.04));border-color:rgba(245,197,24,.2);box-shadow:0 12px 40px rgba(245,197,24,.06)}
+.pr-ey{font-size:9px;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.pr-t{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.pr-s{font-size:12px;color:var(--dim);line-height:1.65;margin-bottom:14px}
+.feats{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.ft{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:9px;padding:9px 11px;background:rgba(255,255,255,.04);border-radius:11px;border:1px solid rgba(255,255,255,.07)}
+.ft-ic{width:26px;height:26px;border-radius:8px;background:var(--golda);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ft-body{}
+.ft-t{font-weight:600;color:var(--text);font-size:12px}
+.ft-s{font-size:10px;color:var(--faint);margin-top:1px}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}
+.plan{padding:14px 12px;border-radius:17px;border:1.5px solid rgba(255,255,255,.09);background:rgba(255,255,255,.04);cursor:pointer;transition:all .2s;text-align:center}
+.plan.sel{border-color:rgba(245,197,24,.45);background:var(--golda)}
+.plan-nm{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}
+.plan-pr{font-size:21px;font-weight:900;font-family:'JetBrains Mono',monospace;letter-spacing:-1px}
+.plan-pr sub{font-size:11px;font-weight:400;letter-spacing:0}
+.plan-per{font-size:9px;color:var(--dim);margin-top:2px}
+.plan-save{font-size:8px;background:var(--gg);color:#060300;padding:2px 7px;border-radius:7px;font-weight:800;margin-top:4px;display:inline-block}
+.pay-btn{width:100%;padding:15px;border-radius:18px;border:none;cursor:pointer;background:var(--gg);color:#060300;font-family:'Outfit',sans-serif;font-size:15px;font-weight:900;box-shadow:0 8px 28px rgba(245,197,24,.28);transition:all .2s;letter-spacing:.3px}
+.pay-btn:active{transform:scale(.97)}
+.pay-fine{text-align:center;font-size:10px;color:var(--faint);margin-top:8px}
+.pay-logos{display:flex;justify-content:center;gap:8px;margin-top:9px;opacity:.35}
+.pl{font-size:10px;font-weight:700;padding:3px 7px;border:1px solid rgba(255,255,255,.18);border-radius:5px;color:var(--dim)}
+
+/* ─── SETTINGS ─── */
+.sc{padding:17px 19px}
+.s-lbl{font-size:9px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:11px}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.sr:last-child{border:none}
+.sr-l{font-size:13px;font-weight:500}
+.sr-r{font-size:12px;color:var(--gold);font-weight:700}
+.tog{width:42px;height:22px;border-radius:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);cursor:pointer;position:relative;transition:background .3s;flex-shrink:0}
+.tog.on{background:var(--gg)}
+.tog::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.tog.on::after{transform:translateX(20px)}
+.sel-in{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:var(--text);font-family:'Outfit',sans-serif;font-size:11px;padding:5px 9px;outline:none;cursor:pointer;appearance:none}
+.prof-hero{padding:22px 19px;text-align:center;background:linear-gradient(135deg,rgba(245,197,24,.08),rgba(255,140,60,.05),rgba(255,107,157,.04));border-color:rgba(245,197,24,.17)}
+.p-av{width:78px;height:78px;border-radius:24px;margin:0 auto 11px;background:var(--gg);display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 16px 44px rgba(245,197,24,.28),0 0 0 1px rgba(255,255,255,.09)}
+.p-nm{font-size:21px;font-weight:800;letter-spacing:-.8px}
+.p-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:var(--golda);border:1px solid rgba(245,197,24,.22);border-radius:18px;padding:4px 12px;font-size:10px;color:var(--gold);font-weight:700}
+/* API key settings */
+.key-row{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;margin-top:6px}
+.key-row input{flex:1;padding:10px 12px;background:transparent;border:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;min-width:0}
+.key-row button{padding:8px 12px;background:none;border:none;cursor:pointer;color:var(--faint);font-size:15px;transition:color .2s;flex-shrink:0}
+.key-row button:hover{color:var(--gold)}
+.save-key-btn{padding:8px 14px;border-radius:11px;border:none;background:var(--gg);color:#060300;font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;cursor:pointer;margin-top:7px;width:100%}
+
+/* ─── NAV ─── */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:8px 16px 28px;background:rgba(4,4,7,.84);backdrop-filter:blur(52px) saturate(180%);-webkit-backdrop-filter:blur(52px) saturate(180%);border-top:1px solid rgba(255,255,255,.055);display:flex;justify-content:space-around;z-index:200}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--faint);font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;padding:5px 12px;border-radius:13px;transition:color .25s;letter-spacing:.8px;text-transform:uppercase}
+.nb-ic{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.nb.on{color:var(--gold)}
+.nb.on .nb-ic{background:rgba(245,197,24,.14);border:1px solid rgba(245,197,24,.26);transform:scale(1.1) translateY(-2px);box-shadow:0 4px 14px rgba(245,197,24,.18)}
+.nb:active .nb-ic{transform:scale(.8)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-120px);background:var(--ggreen);color:#fff;padding:10px 18px;border-radius:15px;font-size:12px;font-weight:700;z-index:900;transition:transform .45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 28px rgba(45,209,122,.3);white-space:nowrap;max-width:88vw;text-align:center;letter-spacing:.2px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.warn{background:var(--gred);box-shadow:0 8px 28px rgba(255,90,90,.3)}
+.toast.info{background:linear-gradient(135deg,#5db8f5,#b39ddb);box-shadow:0 8px 28px rgba(93,184,245,.3)}
+
+/* ─── MODAL ─── */
+.modal-ov{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal-sh{width:100%;max-width:430px;max-height:84vh;background:rgba(7,7,12,.97);backdrop-filter:blur(48px);border-radius:26px 26px 0 0;border:1px solid rgba(255,255,255,.09);border-bottom:none;padding:0 17px 40px;transform:translateY(100%);transition:transform .45s cubic-bezier(.16,1,.3,1);overflow-y:auto}
+.modal-ov.open .modal-sh{transform:translateY(0)}
+.m-handle{width:32px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin:11px auto 18px}
+
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:44px 18px;color:var(--faint)}
+.empty-em{font-size:46px;margin-bottom:11px;opacity:.45}
+.empty p{font-size:13px;line-height:1.7;color:var(--dim)}
+
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+input[type=number]::-webkit-inner-spin-button{display:none}
+</style>
+</head>
+<body>
+<div class="amb"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div></div>
+<div class="noise"></div>
+
+<!-- ═══════════════════════════════════════
+     LANDING PAGE
+═══════════════════════════════════════ -->
+<div id="landing">
+  <div class="land-hero">
+    <div class="land-badge">🆕 Şimdi Ücretsiz</div>
+    <div class="land-icon">🍽️</div>
+    <div class="land-title">Menu<em>Scan</em></div>
+    <div class="land-sub">Restoran menüsünü fotoğrafla,<br>yapay zeka saniyeler içinde en sağlıklı yemeği bulsun.</div>
+    <div class="social-proof">
+      <div class="sp-faces">
+        <div class="sp-face">👩</div><div class="sp-face">👨</div><div class="sp-face">👩‍🦱</div><div class="sp-face">🧔</div>
+      </div>
+      <div class="sp-text"><strong>2.400+</strong> kullanıcı bu ay katıldı</div>
+    </div>
+    <div class="feat-pills">
+      <div class="fp"><span>📷</span> Fotoğrafla tara</div>
+      <div class="fp"><span>🤖</span> AI analizi</div>
+      <div class="fp"><span>⚡</span> 5 saniye</div>
+      <div class="fp"><span>⚠️</span> Alerjen uyarısı</div>
+      <div class="fp"><span>🌱</span> Vegan filtre</div>
+      <div class="fp"><span>🆓</span> Ücretsiz başla</div>
+    </div>
+    <div class="land-cta">
+      <button class="cta-main" onclick="startOnb()">✦ Ücretsiz Başla</button>
+      <button class="cta-sub" onclick="startOnb()">Nasıl çalışır? →</button>
+    </div>
+    <div class="land-fine">Kredi kartı gerekmez · Anında kullanıma hazır</div>
+  </div>
+  <!-- App mockup screenshots -->
+  <div class="mockup-row">
+    <div class="mock">
+      <div class="mock-hd"><div class="mock-hd-t">MENUSCAN AI</div><div class="mock-hd-s">Menüyü <em style="font-style:italic">Tara</em></div></div>
+      <div class="mock-cam"><div class="mock-sl"></div>📷</div>
+      <div class="mock-res">
+        <div><span class="mock-tag mock-tag-g">✦ AI Önerisi</span></div>
+        <div class="mock-item"><span class="mock-item-t">Izgara Tavuk Salata</span><span class="mock-item-k">320 kcal</span></div>
+        <div class="mock-item"><span class="mock-item-t">Mercimek Çorbası</span><span class="mock-item-k">180 kcal</span></div>
+        <div class="mock-item"><span class="mock-item-t">Pizza Margarita</span><span class="mock-item-k mock-tag-r" style="background:none;border:none;color:#ff5a5a">✕ Kaçın</span></div>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="mock-hd"><div class="mock-hd-t">AI ANALİZ</div><div class="mock-hd-s">En <em style="font-style:italic">İyi</em> Seçim</div></div>
+      <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;gap:6px">
+        <div style="padding:10px;background:rgba(45,209,122,.08);border:1px solid rgba(45,209,122,.18);border-radius:11px">
+          <div style="font-size:9px;color:#2dd17a;font-weight:700;letter-spacing:1px">HARIKA SEÇİM</div>
+          <div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:800;margin-top:3px">Izgara Levrek</div>
+          <div style="font-size:8px;color:rgba(240,240,255,.5);margin-top:3px;line-height:1.4">Yüksek protein, düşük kalori. Kilo verme hedefin için mükemmel.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+          <div style="text-align:center;padding:6px;background:rgba(45,209,122,.07);border-radius:9px;border:1px solid rgba(45,209,122,.12)"><div style="font-size:12px;font-weight:800;color:#2dd17a">280</div><div style="font-size:7px;color:rgba(240,240,255,.4);text-transform:uppercase;letter-spacing:.8px">kcal</div></div>
+          <div style="text-align:center;padding:6px;background:rgba(45,209,122,.07);border-radius:9px;border:1px solid rgba(45,209,122,.12)"><div style="font-size:12px;font-weight:800;color:#2dd17a">34g</div><div style="font-size:7px;color:rgba(240,240,255,.4);text-transform:uppercase;letter-spacing:.8px">protein</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="mock-hd"><div class="mock-hd-t">ALERJEN</div><div class="mock-hd-s"><em style="font-style:italic">Güvenli</em> Seçenekler</div></div>
+      <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;gap:5px">
+        <div class="mock-item" style="background:rgba(255,90,90,.06);border-color:rgba(255,90,90,.18)"><span class="mock-item-t">⚠️ Glutensiz</span><span style="font-size:7px;color:#ff5a5a;font-weight:700">3 seçenek</span></div>
+        <div class="mock-item" style="background:rgba(255,90,90,.06);border-color:rgba(255,90,90,.18)"><span class="mock-item-t">⚠️ Laktozsuz</span><span style="font-size:7px;color:#ff5a5a;font-weight:700">5 seçenek</span></div>
+        <div class="mock-item"><span class="mock-item-t">🌱 Vegan</span><span style="font-size:7px;color:#2dd17a;font-weight:700">2 seçenek</span></div>
+        <div style="padding:7px 8px;background:rgba(45,209,122,.07);border:1px solid rgba(45,209,122,.15);border-radius:9px"><div style="font-size:8px;color:#2dd17a;font-weight:700">💡 İPUCU</div><div style="font-size:7px;color:rgba(240,240,255,.45);margin-top:2px;line-height:1.4">Sos olmadan söyleyerek soya alerjinizi önleyin.</div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Testimonials -->
+  <div class="testimonials">
+    <div class="testi-title">Kullanıcılar Ne Diyor</div>
+    <div class="testi"><div class="testi-stars">⭐⭐⭐⭐⭐</div><div class="testi-t">"Dışarıda yemek yerken hep ne sipariş edeceğimi bilemezdim. MenuScan sayesinde artık her restoranda doğru seçimi yapıyorum."</div><div class="testi-nm">Ayşe K. · İstanbul</div></div>
+    <div class="testi"><div class="testi-stars">⭐⭐⭐⭐⭐</div><div class="testi-t">"Gluten alerjim var ve bu uygulama hayat kurtarıcı. Menüyü tarayınca hangi yemeklerin güvenli olduğunu hemen gösteriyor."</div><div class="testi-nm">Mehmet A. · Ankara</div></div>
+    <div class="testi"><div class="testi-stars">⭐⭐⭐⭐⭐</div><div class="testi-t">"Kas yaparken protein takibi önemliydi ama restoranda yapmak zordu. Artık menüyü fotoğraflayıp en yüksek proteinli seçeneği buluyorum."</div><div class="testi-nm">Emre T. · İzmir</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ONBOARDING
+═══════════════════════════════════════ -->
+<div id="onb" style="display:none">
+  <div class="onb-wrap">
+    <div class="onb-prog">
+      <div class="onb-p on" id="op0"></div><div class="onb-p" id="op1"></div>
+      <div class="onb-p" id="op2"></div><div class="onb-p" id="op3"></div>
+    </div>
+    <!-- Step 0: Welcome -->
+    <div class="onb-step show" id="os0">
+      <div class="onb-ico">👋</div>
+      <div class="onb-h">Hoş <em>Geldin!</em></div>
+      <div class="onb-s">Sana özel analiz için birkaç bilgiye ihtiyacım var.</div>
+      <div><div class="onb-lbl">Adın</div><input class="onb-in" id="on-n" placeholder="Adını yaz..."></div>
+      <div class="onb-row2">
+        <div><div class="onb-lbl">Yaş</div><input class="onb-in" id="on-a" type="number" placeholder="25" min="10" max="99"></div>
+        <div><div class="onb-lbl">Cinsiyet</div><select class="onb-in" id="on-g" style="appearance:none"><option value="female">Kadın ♀</option><option value="male">Erkek ♂</option></select></div>
+      </div>
+    </div>
+    <!-- Step 1: Goal -->
+    <div class="onb-step" id="os1">
+      <div class="onb-ico">🎯</div>
+      <div class="onb-h">Beslenme <em>Hedefin</em></div>
+      <div class="onb-s">Yapay zeka öneriyi hedefine göre kişiselleştirir.</div>
+      <div class="onb-grid">
+        <div class="onb-opt on" data-g="lose" onclick="osg(this)">🔥 Kilo Ver<br><small style="color:var(--faint);font-size:10px">Kalori açığı</small></div>
+        <div class="onb-opt" data-g="maintain" onclick="osg(this)">⚖️ Dengeli Kal<br><small style="color:var(--faint);font-size:10px">Makro denge</small></div>
+        <div class="onb-opt" data-g="muscle" onclick="osg(this)">💪 Kas Yap<br><small style="color:var(--faint);font-size:10px">Yüksek protein</small></div>
+        <div class="onb-opt" data-g="healthy" onclick="osg(this)">🌿 Sağlıklı Beslen<br><small style="color:var(--faint);font-size:10px">Temiz beslenme</small></div>
+      </div>
+    </div>
+    <!-- Step 2: Allergens -->
+    <div class="onb-step" id="os2">
+      <div class="onb-ico">⚠️</div>
+      <div class="onb-h">Alerjen & <em>Diyet</em></div>
+      <div class="onb-s">Uygunsuz yemekleri otomatik işaretleyelim. Atlayabilirsin.</div>
+      <div class="onb-grid">
+        <div class="onb-opt" data-al="gluten" onclick="osal(this)">🌾 Glutensiz<br><small style="color:var(--faint);font-size:10px">Çölyak / duyarlılık</small></div>
+        <div class="onb-opt" data-al="lactose" onclick="osal(this)">🥛 Laktozsuz<br><small style="color:var(--faint);font-size:10px">Süt alerjisi</small></div>
+        <div class="onb-opt" data-al="veg" onclick="osal(this)">🥦 Vejeteryan<br><small style="color:var(--faint);font-size:10px">Et yok</small></div>
+        <div class="onb-opt" data-al="vegan" onclick="osal(this)">🌱 Vegan<br><small style="color:var(--faint);font-size:10px">Hayvansal ürün yok</small></div>
+      </div>
+    </div>
+    <!-- Step 3: API Key -->
+    <div class="onb-step" id="os3">
+      <div class="onb-ico">🔑</div>
+      <div class="onb-h">AI <em>Bağlantısı</em></div>
+      <div class="onb-s">MenuScan, Claude AI kullanır. Ücretsiz API key ile çalışır.</div>
+      <div class="key-info">
+        <div class="key-ic">💡</div>
+        <div class="key-t">
+          <b>Ücretsiz API key nasıl alınır?</b>
+          <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>'a git → "Get API Key" → Kopyala yapıştır. <b>Aylık $5 ücretsiz kredi</b> verilir (~1000 tarama).
+        </div>
+      </div>
+      <div><div class="onb-lbl">Claude API Key</div>
+        <div class="key-tog">
+          <input class="onb-in" id="on-key" type="password" placeholder="sk-ant-api...">
+          <button class="key-toggle-vis" onclick="togKeyVis('on-key',this)">👁</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px"><span class="free-chip">✓ Ücretsiz</span><span style="font-size:11px;color:var(--dim)">Key bilgisi cihazınızda şifreli saklanır</span></div>
+    </div>
+    <button class="onb-next" id="onb-btn" onclick="onbNext()">Devam →</button>
+    <button class="onb-skip" onclick="onbSkip()">Atla →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════ -->
+<div id="app" style="display:none">
+
+  <!-- ░░ SCAN ░░ -->
+  <div class="page on" id="page-scan">
+    <div class="ph">
+      <div class="ph-l">
+        <div class="ey">MenuScan AI</div>
+        <div class="pt">Menüyü <em>Tara</em></div>
+        <div class="ps" id="g-desc">Hedef yükleniyor...</div>
+      </div>
+      <div class="pbadge pb-g" id="ctr-badge" onclick="goPage('premium')">5 hak</div>
+    </div>
+
+    <!-- No key warning -->
+    <div class="g no-key" id="no-key-banner" style="display:none">
+      <div class="gs"></div>
+      <div class="no-key-ic">🔑</div>
+      <div class="no-key-t"><b>API Key Gerekli</b>Analiz yapabilmek için Claude API key'ini ekle.</div>
+      <button class="no-key-btn" onclick="goPage('settings');setTimeout(()=>document.getElementById('key-input').focus(),400)">Ekle →</button>
+    </div>
+
+    <!-- SCAN HERO -->
+    <div class="scan-hero">
+      <div class="cam-area" id="cam-area" onclick="document.getElementById('fi').click()">
+        <div class="caf"></div>
+        <div class="cn cn-tl"></div><div class="cn cn-tr"></div><div class="cn cn-bl"></div><div class="cn cn-br"></div>
+        <div class="scan-line"></div>
+        <img id="prev-img" alt="menü">
+        <div class="cam-em" id="cam-em">📷</div>
+        <div class="cam-t" id="cam-t">Menü Fotoğrafı Çek</div>
+        <div class="cam-s" id="cam-s">veya galerisinden seç</div>
+      </div>
+      <input type="file" id="fi" accept="image/*" capture="environment" onchange="onFile(this)">
+      <!-- Loading overlay -->
+      <div class="load-ov" id="load-ov">
+        <div class="spin"></div>
+        <div class="l-title">AI analiz ediyor...</div>
+        <div class="lsteps">
+          <div class="ls act" id="ls0"><div class="ls-d"></div>Görsel işleniyor</div>
+          <div class="ls" id="ls1"><div class="ls-d"></div>Yemekler tespit ediliyor</div>
+          <div class="ls" id="ls2"><div class="ls-d"></div>Besin değerleri hesaplanıyor</div>
+          <div class="ls" id="ls3"><div class="ls-d"></div>En iyi seçenek belirleniyor</div>
+        </div>
+      </div>
+      <!-- Controls -->
+      <div class="ctrl">
+        <div><div class="clbl">Hedef</div>
+          <div class="chips" id="gc">
+            <div class="chip on" data-g="lose" onclick="setG(this)">🔥 Kilo Ver</div>
+            <div class="chip" data-g="maintain" onclick="setG(this)">⚖️ Dengeli</div>
+            <div class="chip" data-g="muscle" onclick="setG(this)">💪 Kas Yap</div>
+            <div class="chip" data-g="healthy" onclick="setG(this)">🌿 Sağlıklı</div>
+          </div>
+        </div>
+        <div><div class="clbl">Alerjen Filtresi</div>
+          <div class="al-row">
+            <div class="al" data-al="gluten" onclick="tAl(this)">🌾 Glutensiz</div>
+            <div class="al" data-al="lactose" onclick="tAl(this)">🥛 Laktozsuz</div>
+            <div class="al" data-al="veg" onclick="tAl(this)">🥦 Vejeteryan</div>
+            <div class="al" data-al="vegan" onclick="tAl(this)">🌱 Vegan</div>
+          </div>
+        </div>
+        <button class="scan-btn" id="scan-btn" onclick="doScan()" disabled>
+          <span>✦</span> Menüyü Analiz Et
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results" id="results" style="display:none"></div>
+  </div>
+
+  <!-- ░░ HISTORY ░░ -->
+  <div class="page" id="page-history">
+    <div class="ph" style="padding-top:46px">
+      <div class="ph-l"><div class="ey">Kayıtlar</div><div class="pt">Tarama <em>Geçmişi</em></div></div>
+    </div>
+    <div class="stats-row" id="h-stats"></div>
+    <div id="h-list"></div>
+  </div>
+
+  <!-- ░░ PREMIUM ░░ -->
+  <div class="page" id="page-premium">
+    <div class="ph" style="padding-top:46px">
+      <div class="ph-l"><div class="ey">Upgrade</div><div class="pt">Premium'a <em>Geç</em></div></div>
+    </div>
+    <div class="g"><div class="gs"></div><div class="us-card">
+      <div class="us-top"><div class="us-l">Bu Ay Kullanılan</div><div class="us-r" id="us-txt">0 / 5</div></div>
+      <div class="us-bar"><div class="us-fill" id="us-fill" style="width:0%"></div></div>
+    </div></div>
+    <div class="g pr-hero">
+      <div class="gs"></div>
+      <div class="pr-ey">✦ MenuScan Premium</div>
+      <div class="pr-t">Sınırsız AI Analiz</div>
+      <div class="pr-s">Ücretsiz sürümde ayda 5 tarama hakkın var. Premium ile sınırsız tara.</div>
+      <div class="feats">
+        <div class="ft"><div class="ft-ic">♾️</div><div class="ft-body"><div class="ft-t">Sınırsız tarama</div><div class="ft-s">Her gün istediğin kadar</div></div></div>
+        <div class="ft"><div class="ft-ic">⚠️</div><div class="ft-body"><div class="ft-t">Gelişmiş alerjen tespiti</div><div class="ft-s">18 farklı alerjen kategorisi</div></div></div>
+        <div class="ft"><div class="ft-ic">📊</div><div class="ft-body"><div class="ft-t">Mikro besin analizi</div><div class="ft-s">Vitamin, mineral, omega-3...</div></div></div>
+        <div class="ft"><div class="ft-ic">📈</div><div class="ft-body"><div class="ft-t">Haftalık beslenme raporu</div><div class="ft-s">PDF olarak indir & paylaş</div></div></div>
+        <div class="ft"><div class="ft-ic">💰</div><div class="ft-body"><div class="ft-t">Fiyat/besin değeri analizi</div><div class="ft-s">En değerli seçeneği bul</div></div></div>
+        <div class="ft"><div class="ft-ic">🔗</div><div class="ft-body"><div class="ft-t">AURA Kalori Takip Entegrasyonu</div><div class="ft-s">Otomatik kaydedilir</div></div></div>
+      </div>
+      <div class="plans">
+        <div class="plan" id="pl-m" onclick="sPlan('monthly')">
+          <div class="plan-nm">Aylık</div>
+          <div class="plan-pr">₺89<sub>/ay</sub></div>
+          <div class="plan-per">Aylık faturalandırma</div>
+        </div>
+        <div class="plan sel" id="pl-y" onclick="sPlan('yearly')">
+          <div class="plan-nm">Yıllık</div>
+          <div class="plan-pr">₺49<sub>/ay</sub></div>
+          <div class="plan-per">₺588/yıl faturalandırma</div>
+          <div class="plan-save">%45 Tasarruf</div>
+        </div>
+      </div>
+      <button class="pay-btn" onclick="doPayment()">7 Gün Ücretsiz Dene →</button>
+      <div class="pay-fine">İstediğin zaman iptal et · Gizli ücret yok · Güvenli ödeme</div>
+      <div class="pay-logos"><div class="pl">STRIPE</div><div class="pl">SSL</div><div class="pl">3DS</div><div class="pl">KVKK</div></div>
+    </div>
+  </div>
+
+  <!-- ░░ SETTINGS ░░ -->
+  <div class="page" id="page-settings">
+    <div class="ph" style="padding-top:46px">
+      <div class="ph-l"><div class="ey">Hesap</div><div class="pt">Profil & <em>Ayarlar</em></div></div>
+    </div>
+    <!-- Profile hero -->
+    <div class="g prof-hero">
+      <div class="gs"></div>
+      <div class="p-av">🍽️</div>
+      <div class="p-nm" id="pf-nm">—</div>
+      <div class="p-badge" id="pf-badge">🔥 Kilo Ver</div>
+    </div>
+    <!-- API Key -->
+    <div class="g sc">
+      <div class="gs"></div>
+      <div class="s-lbl">AI Bağlantısı</div>
+      <div style="font-size:11px;color:var(--dim);line-height:1.55;margin-bottom:9px">Claude API key'ini gir. <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold);text-decoration:none">console.anthropic.com</a>'dan ücretsiz al.</div>
+      <div class="key-row">
+        <input id="key-input" type="password" placeholder="sk-ant-api03-...">
+        <button onclick="togKeyVis('key-input',this)">👁</button>
+        <button onclick="testKey()" style="padding:8px 10px;font-size:12px">✓</button>
+      </div>
+      <button class="save-key-btn" onclick="saveKey()">API Key'i Kaydet</button>
+    </div>
+    <!-- Prefs -->
+    <div class="g sc">
+      <div class="gs"></div>
+      <div class="s-lbl">Beslenme Tercihleri</div>
+      <div class="sr"><div class="sr-l">Hedef</div><select class="sel-in" id="pf-goal" onchange="saveGoal()"><option value="lose">🔥 Kilo Ver</option><option value="maintain">⚖️ Dengeli</option><option value="muscle">💪 Kas Yap</option><option value="healthy">🌿 Sağlıklı</option></select></div>
+      <div class="sr"><div class="sr-l">Vejeteryan</div><div class="tog" id="tog-veg" onclick="tPref('veg')"></div></div>
+      <div class="sr"><div class="sr-l">Vegan</div><div class="tog" id="tog-vegan" onclick="tPref('vegan')"></div></div>
+      <div class="sr"><div class="sr-l">Glutensiz</div><div class="tog" id="tog-gluten" onclick="tPref('gluten')"></div></div>
+      <div class="sr"><div class="sr-l">Laktozsuz</div><div class="tog" id="tog-lactose" onclick="tPref('lactose')"></div></div>
+    </div>
+    <!-- Profile info -->
+    <div class="g sc">
+      <div class="gs"></div>
+      <div class="s-lbl">Kişisel Bilgiler</div>
+      <div class="sr"><div class="sr-l">Ad</div><div class="sr-r" id="pf-n">—</div></div>
+      <div class="sr"><div class="sr-l">Yaş</div><div class="sr-r" id="pf-a">—</div></div>
+      <div class="sr"><div class="sr-l">Cinsiyet</div><div class="sr-r" id="pf-g">—</div></div>
+    </div>
+    <!-- App -->
+    <div class="g sc">
+      <div class="gs"></div>
+      <div class="s-lbl">Uygulama</div>
+      <div class="sr"><div class="sr-l">Versiyon</div><div class="sr-r">1.0.0 Beta</div></div>
+      <div class="sr"><div class="sr-l">Toplam tarama</div><div class="sr-r" id="pf-tot">0</div></div>
+      <div class="sr" style="cursor:pointer" onclick="shareApp()"><div class="sr-l">Arkadaşına Öner 🎁</div><div style="color:var(--gold)">→</div></div>
+      <div class="sr" style="cursor:pointer" onclick="resetAll()"><div class="sr-l" style="color:var(--red)">Verileri Sıfırla</div><div style="color:var(--red)">→</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav" style="display:none">
+  <button class="nb on" onclick="goPage('scan')" id="nb-scan"><div class="nb-ic">📷</div>Tara</button>
+  <button class="nb" onclick="goPage('history')" id="nb-history"><div class="nb-ic">📋</div>Geçmiş</button>
+  <button class="nb" onclick="goPage('premium')" id="nb-premium"><div class="nb-ic">✦</div>Premium</button>
+  <button class="nb" onclick="goPage('settings')" id="nb-settings"><div class="nb-ic">⚙</div>Ayarlar</button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sh"><div class="m-handle"></div><div id="modal-body"></div></div>
+</div>
+
+<script>
+/* ══════════════════════════════════
+   STATE & PERSISTENCE
+══════════════════════════════════ */
+const DEF = { user:null, goal:'lose', allergens:[], prefs:{}, history:[], scansUsed:0, isPremium:false, plan:'yearly', apiKey:'', notif:false };
+let S = { ...DEF };
+
+const GL  = { lose:'🔥 Kilo Ver', maintain:'⚖️ Dengeli', muscle:'💪 Kas Yap', healthy:'🌿 Sağlıklı' };
+const GD  = { lose:'En az kalorili, tok tutan seçenekleri önerir', maintain:'Dengeli makro dağılımlı yemekleri önerir', muscle:'Yüksek proteinli seçenekleri önerir', healthy:'İşlenmemiş, besleyici yemekleri önerir' };
+
+let selFile=null, curGoal='lose', curAl=[];
+let obStep=0, obGoal='lose', obAl=[];
+
+const ld = ()=>{ try{ const r=localStorage.getItem('ms_v3'); if(r) S={...DEF,...JSON.parse(r)}; }catch(e){} };
+const sv = ()=>{ try{ localStorage.setItem('ms_v3',JSON.stringify(S)); }catch(e){} };
+const delay = ms=>new Promise(r=>setTimeout(r,ms));
+const $ = id=>document.getElementById(id);
+
+/* ── LANDING ── */
+function startOnb(){ $('landing').style.display='none'; $('onb').style.display='flex'; }
+
+/* ── ONBOARDING ── */
+function osg(el){ document.querySelectorAll('[data-g]').forEach(e=>e.classList.remove('on')); el.classList.add('on'); obGoal=el.dataset.g; }
+function osal(el){ el.classList.toggle('on'); const a=el.dataset.al; obAl=el.classList.contains('on')?[...obAl,a]:obAl.filter(x=>x!==a); }
+
+function onbNext(){
+  // Validate step 0
+  if(obStep===0 && !$('on-n').value.trim()){ showToast('Adını yazar mısın?','warn'); $('on-n').focus(); return; }
+  if(obStep===3){
+    // Save API key if provided
+    const key = $('on-key').value.trim();
+    S.apiKey = key;
+    S.user = { name: $('on-n').value.trim()||'Kullanıcı', age: parseInt($('on-a').value)||25, gender: $('on-g').value };
+    S.goal = obGoal; S.allergens = obAl; curGoal = obGoal; curAl = [...obAl];
+    sv(); launchApp(); return;
+  }
+  $('os'+obStep).classList.remove('show');
+  obStep++;
+  $('os'+obStep).classList.add('show');
+  [0,1,2,3].forEach(i=>{ $('op'+i).classList.toggle('on',i===obStep); $('op'+i).classList.toggle('done',i<obStep); });
+  $('onb-btn').textContent = obStep===3 ? 'Başla ✦' : 'Devam →';
+  $('onb-skip').style.display = obStep>=2 ? 'block' : 'none';
+}
+function onbSkip(){
+  if(obStep===2){ $('os'+obStep).classList.remove('show'); obStep=3; $('os3').classList.add('show'); [0,1,2,3].forEach(i=>{$('op'+i).classList.toggle('on',i===3);$('op'+i).classList.toggle('done',i<3);}); $('onb-btn').textContent='Başla ✦'; return; }
+  S.user = { name:$('on-n').value.trim()||'Kullanıcı', age:parseInt($('on-a').value)||25, gender:$('on-g').value };
+  S.goal=obGoal; S.allergens=obAl; curGoal=obGoal; curAl=[...obAl];
+  sv(); launchApp();
+}
+function togKeyVis(inId,btn){ const inp=$(inId); inp.type=inp.type==='password'?'text':'password'; btn.textContent=inp.type==='password'?'👁':'🙈'; }
+
+/* ── LAUNCH APP ── */
+function launchApp(){
+  $('onb').style.display='none'; $('landing').style.display='none';
+  $('app').style.display='flex'; $('nav').style.display='flex';
+  curGoal=S.goal||'lose'; curAl=[...(S.allergens||[])];
+  syncChips(); syncAlChips(); updDesc(); updCounter();
+  checkKeyBanner();
+  renderSettings(); renderPremium();
+}
+
+function updDesc(){ $('g-desc').textContent=GD[curGoal]; }
+function updCounter(){
+  const rem=S.isPremium?'∞':Math.max(0,5-(S.scansUsed||0));
+  const el=$('ctr-badge');
+  el.textContent=S.isPremium?'✦ Premium':rem+' hak';
+  el.className='pbadge '+(S.isPremium?'pb-p':'pb-g');
+}
+function syncChips(){ document.querySelectorAll('.chip[data-g]').forEach(c=>c.classList.toggle('on',c.dataset.g===curGoal)); }
+function syncAlChips(){ document.querySelectorAll('.al[data-al]').forEach(c=>c.classList.toggle('on',curAl.includes(c.dataset.al))); }
+function checkKeyBanner(){
+  const banner=$('no-key-banner');
+  if(banner) banner.style.display=S.apiKey?'none':'flex';
+}
+
+/* ── SCAN CONTROLS ── */
+function setG(el){ document.querySelectorAll('.chip[data-g]').forEach(c=>c.classList.remove('on')); el.classList.add('on'); curGoal=el.dataset.g; S.goal=curGoal; sv(); updDesc(); }
+function tAl(el){ el.classList.toggle('on'); const a=el.dataset.al; curAl=el.classList.contains('on')?[...curAl,a]:curAl.filter(x=>x!==a); S.allergens=curAl; sv(); }
+
+/* ── FILE SELECT ── */
+function onFile(inp){
+  const file=inp.files[0]; if(!file) return;
+  selFile=file;
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=$('prev-img'); img.src=e.target.result; img.style.display='block';
+    ['cam-em','cam-t','cam-s'].forEach(id=>{const el=$(id);if(el)el.style.display='none';});
+    $('scan-btn').disabled=false;
+  };
+  r.readAsDataURL(file);
+}
+
+/* ── DO SCAN ── */
+async function doScan(){
+  if(!selFile){ showToast('Önce bir menü fotoğrafı seç','warn'); return; }
+  if(!S.apiKey){ showToast('⚠️ Önce API key ekle → Ayarlar','warn'); goPage('settings'); return; }
+  if(!S.isPremium&&(S.scansUsed||0)>=5){ showToast('⚠️ Aylık limitin doldu! Premium\'a geç.','warn'); goPage('premium'); return; }
+
+  const lo=$('load-ov');
+  lo.classList.add('show');
+  $('results').style.display='none';
+  $('scan-btn').disabled=true;
+
+  const lsIds=['ls0','ls1','ls2','ls3'];
+  lsIds.forEach((s,i)=>{const el=$(s);el.classList.remove('act','done');if(i===0)el.classList.add('act');});
+
+  for(let i=0;i<lsIds.length;i++){
+    await delay(i===0?400:850);
+    if(i>0){$(lsIds[i-1]).classList.remove('act');$(lsIds[i-1]).classList.add('done');}
+    $(lsIds[i]).classList.add('act');
+  }
+
+  try{
+    const b64=await toB64(selFile);
+    const res=await callClaude(b64,selFile.type);
+    await delay(400);
+    lo.classList.remove('show');
+    showResults(res);
+    S.scansUsed=(S.scansUsed||0)+1;
+    S.history.unshift({id:Date.now(),date:new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}),goal:curGoal,result:res});
+    if(S.history.length>30)S.history.pop();
+    sv(); updCounter(); renderPremium();
+    showToast('✦ Analiz tamamlandı!');
+  }catch(err){
+    lo.classList.remove('show');
+    $('scan-btn').disabled=false;
+    lsIds.forEach((s,i)=>{$(s).classList.remove('act','done');if(i===0)$(s).classList.add('act');});
+    const msg=err.message||'Bir hata oluştu';
+    if(msg.includes('401')||msg.includes('auth'))showToast('⚠️ API key geçersiz. Kontrol et.','warn');
+    else showToast('⚠️ '+msg,'warn');
+  }
+}
+
+const toB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f);});
+
+/* ── CLAUDE API ── */
+async function callClaude(b64,mime){
+  const gm={lose:'kilo vermek isteyen, kalori açığında olan',maintain:'kilosunu korumak, dengeli beslenmek isteyen',muscle:'kas yapmak, yüksek protein almak isteyen',healthy:'genel sağlığını iyileştirmek, temiz beslenmek isteyen'};
+  const alTxt=curAl.length>0?`\nKullanıcının KAÇINMASI gereken: ${curAl.join(', ')}. Bu maddeleri içeren yemeklere "KAÇIN" ver ve allergens listesinde belirt.`:'';
+
+  const prompt=`Sen diyetisyen yapay zekasısın. Bu restoran menüsünü analiz et.
+
+Kullanıcı: ${gm[curGoal]} biri.${alTxt}
+
+SADECE şu JSON formatında yanıt ver (başka hiçbir şey yazma):
+{
+  "restaurant": "tespit edilen restoran adı veya Restoran",
+  "cuisine": "mutfak türü (Türk, İtalyan, vb.)",
+  "bestPick": {
+    "name": "yemek adı",
+    "reason": "hedefle bağlantılı detaylı neden (2-3 cümle, Türkçe)",
+    "kcal": 0,
+    "protein": 0,
+    "carb": 0,
+    "fat": 0,
+    "fiber": 0,
+    "tip": "nasıl sipariş etmeli (opsiyonel ipucu)"
+  },
+  "items": [
+    {
+      "name": "yemek adı",
+      "score": "HARIKA",
+      "desc": "açıklama (1-2 cümle)",
+      "kcal": 0,
+      "protein": 0,
+      "carb": 0,
+      "fat": 0,
+      "allergens": [],
+      "priceValue": "iyi/orta/düşük"
+    }
+  ],
+  "generalTip": "Bu restoran hakkında genel beslenme tavsiyesi",
+  "avoided": ["kaçınılması gereken yemek isimleri listesi"]
+}
+
+Kurallar: Menü değilse {"error":"..."} döndür. Max 9 yemek. Tüm metinler Türkçe.`;
+
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},
+    body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mime,data:b64}},{type:'text',text:prompt}]}]})
+  });
+
+  if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.error?.message||'HTTP '+resp.status); }
+  const data=await resp.json();
+  const txt=data.content.map(b=>b.text||'').join('');
+  const clean=txt.replace(/```json|```/g,'').trim();
+  const parsed=JSON.parse(clean);
+  if(parsed.error)throw new Error(parsed.error);
+  return parsed;
+}
+
+/* ── SHOW RESULTS ── */
+function showResults(d){
+  const el=$('results');
+  el.style.display='flex';
+  const SC={HARIKA:{cls:'sg',lbl:'✓ Harika'},UYGUN:{cls:'so',lbl:'~ Uygun'},KAÇIN:{cls:'sb',lbl:'✕ Kaçın'}};
+  const sc=s=>SC[s]||SC['UYGUN'];
+
+  el.innerHTML=`
+    ${d.restaurant||d.cuisine?`<div style="font-size:10px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:0 2px">${[d.restaurant,d.cuisine].filter(Boolean).join(' · ')}</div>`:''}
+
+    <div class="g best-c">
+      <div class="gs"></div>
+      <div class="bc-ey">AI Önerisi · ${GL[curGoal]}</div>
+      <div class="bc-nm">${d.bestPick.name}</div>
+      <div class="bc-why">${d.bestPick.reason}</div>
+      ${d.bestPick.tip?`<div style="font-size:11px;color:var(--gold);background:var(--golda);border:1px solid rgba(245,197,24,.18);border-radius:11px;padding:8px 11px;margin-bottom:12px">💡 ${d.bestPick.tip}</div>`:''}
+      <div class="bc-macs">
+        <div class="bm"><div class="bm-v">${d.bestPick.kcal}</div><div class="bm-l">kcal</div></div>
+        <div class="bm"><div class="bm-v">${d.bestPick.protein}g</div><div class="bm-l">protein</div></div>
+        <div class="bm"><div class="bm-v">${d.bestPick.carb}g</div><div class="bm-l">karb</div></div>
+        <div class="bm"><div class="bm-v">${d.bestPick.fat}g</div><div class="bm-l">yağ</div></div>
+      </div>
+    </div>
+
+    ${d.generalTip?`<div class="g tip-c"><div class="gs"></div><div class="tip-ic">💡</div><div class="tip-t">${d.generalTip}</div></div>`:''}
+    ${d.avoided?.length?`<div class="g tip-c" style="background:var(--reda);border-color:rgba(255,90,90,.18)"><div class="gs"></div><div class="tip-ic">⚠️</div><div class="tip-t"><b style="color:var(--red);display:block;margin-bottom:2px">Kaçınılması önerilen</b>${d.avoided.join(', ')}</div></div>`:''}
+
+    <div style="font-size:11px;color:var(--dim);font-weight:700;padding:0 2px;margin-top:2px">Tüm Yemekler</div>
+    ${(d.items||[]).map(it=>{const s=sc(it.score);const als=(it.allergens||[]).map(a=>`<div class="al-tag">⚠️ ${a}</div>`).join('');
+    return `<div class="g item-c">
+      <div class="gs"></div>
+      <div class="ic-top"><div class="ic-nm">${it.name}</div><div class="ic-sc ${s.cls}">${s.lbl}</div></div>
+      <div class="ic-d">${it.desc}</div>
+      <div class="ic-ms">
+        <div class="ic-m"><b>${it.kcal}</b> kcal</div>
+        <div class="ic-m">P <b>${it.protein}g</b></div>
+        <div class="ic-m">K <b>${it.carb}g</b></div>
+        <div class="ic-m">Y <b>${it.fat}g</b></div>
+        ${it.priceValue?`<div class="ic-m" style="color:var(--amber)">₺ ${it.priceValue}</div>`:''}
+      </div>
+      ${als?`<div class="ic-als">${als}</div>`:''}
+    </div>`;}).join('')}
+
+    <div class="g share-c">
+      <div class="gs"></div>
+      <div style="font-size:11px;color:var(--dim);font-weight:700">Bu analizi paylaş</div>
+      <div class="share-row">
+        <button class="sh-btn" onclick="doShare('${d.bestPick?.name?.replace(/'/g,'')}','${d.bestPick?.kcal}')">📤 Paylaş</button>
+        <button class="sh-btn" onclick="doCopy('${d.bestPick?.name?.replace(/'/g,'')}','${d.bestPick?.kcal}')">📋 Kopyala</button>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetScan()">+ Yeni Menü Tara</button>
+  `;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetScan(){
+  selFile=null;
+  $('prev-img').style.display='none';
+  ['cam-em','cam-t','cam-s'].forEach(id=>{const el=$(id);if(el)el.style.display='';});
+  $('scan-btn').disabled=true;
+  $('results').style.display='none';
+  $('fi').value='';
+  ['ls0','ls1','ls2','ls3'].forEach((s,i)=>{$(s).classList.remove('act','done');if(i===0)$(s).classList.add('act');});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── HISTORY ── */
+function renderHistory(){
+  const total=S.history?.length||0;
+  const great=(S.history||[]).filter(h=>(h.result?.items||[]).some(i=>i.score==='HARIKA')).length;
+  $('h-stats').innerHTML=`
+    <div class="g st"><div class="gs"></div><div class="st-ic">📷</div><div class="st-v" style="color:var(--gold)">${total}</div><div class="st-l">Tarama</div></div>
+    <div class="g st"><div class="gs"></div><div class="st-ic">✦</div><div class="st-v" style="color:var(--green)">${great}</div><div class="st-l">Harika Seçim</div></div>
+    <div class="g st"><div class="gs"></div><div class="st-ic">🔥</div><div class="st-v" style="color:var(--amber)">${S.scansUsed||0}</div><div class="st-l">Bu Ay</div></div>
+  `;
+  const el=$('h-list');
+  if(!S.history?.length){ el.innerHTML=`<div class="empty"><div class="empty-em">📋</div><p>Henüz tarama geçmişin yok.<br>İlk menüyü tara, buraya kaydedelim!</p></div>`; return; }
+  el.innerHTML=S.history.map((h,i)=>`
+    <div class="g h-item" onclick="showHDetail(${i})">
+      <div class="gs"></div>
+      <div class="h-th">🍽️</div>
+      <div class="h-info">
+        <div class="h-nm">${h.result?.bestPick?.name||'Menü Analizi'}</div>
+        <div class="h-dt">${h.date} · ${GL[h.goal]||''}</div>
+        ${h.result?.bestPick?`<div class="h-pk">✦ ${h.result.bestPick.kcal} kcal · P:${h.result.bestPick.protein}g</div>`:''}
+      </div>
+      <div class="h-arr">›</div>
+    </div>
+  `).join('');
+}
+
+function showHDetail(i){
+  const h=S.history[i]; if(!h?.result)return;
+  const bp=h.result.bestPick;
+  $('modal-body').innerHTML=`
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px">${bp?.name||'Analiz'}</div>
+    <div style="font-size:10px;color:var(--dim);margin-bottom:14px">${h.date} · ${GL[h.goal]||''}</div>
+    ${bp?`<div style="font-size:12px;color:var(--dim);line-height:1.65;margin-bottom:13px">${bp.reason}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px">
+      ${['kcal','protein','carb','fat'].map(k=>`<div style="text-align:center;padding:9px 5px;background:var(--greena);border:1px solid rgba(45,209,122,.14);border-radius:12px"><div style="font-size:15px;font-weight:800;color:var(--green);font-family:'JetBrains Mono',monospace">${bp[k]}${k!=='kcal'?'g':''}</div><div style="font-size:8px;color:var(--faint);margin-top:2px;text-transform:uppercase;letter-spacing:.8px">${k}</div></div>`).join('')}
+    </div>`:''}
+    <div style="font-size:13px;font-weight:700;margin-bottom:10px">Tüm Yemekler</div>
+    ${(h.result?.items||[]).map(it=>{const sc={HARIKA:{cls:'sg',lbl:'✓'},UYGUN:{cls:'so',lbl:'~'},KAÇIN:{cls:'sb',lbl:'✕'}};const s=sc[it.score]||sc.UYGUN;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 11px;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px"><div><div style="font-size:12px;font-weight:600">${it.name}</div><div style="font-size:10px;color:var(--dim);margin-top:2px;font-family:'JetBrains Mono',monospace">${it.kcal} kcal · P:${it.protein}g</div></div><div class="ic-sc ${s.cls}">${s.lbl}</div></div>`;}).join('')}
+  `;
+  openModal();
+}
+
+/* ── PREMIUM ── */
+function renderPremium(){
+  const used=S.scansUsed||0, max=5;
+  $('us-txt').textContent=S.isPremium?'Sınırsız (Premium)':`${used} / ${max} tarama`;
+  $('us-fill').style.width=S.isPremium?'100%':Math.min(used/max*100,100)+'%';
+  if(S.isPremium)$('us-fill').style.background='var(--ggreen)';
+}
+function sPlan(p){ S.plan=p; sv(); $('pl-m').classList.toggle('sel',p==='monthly'); $('pl-y').classList.toggle('sel',p==='yearly'); }
+function doPayment(){
+  // In production: integrate Stripe.js
+  showToast('🚀 Ödeme entegrasyonu yakında!','info');
+}
+
+/* ── SETTINGS ── */
+function renderSettings(){
+  const u=S.user; if(!u)return;
+  $('pf-nm').textContent=u.name;
+  $('pf-badge').textContent=GL[S.goal]||'';
+  $('pf-n').textContent=u.name;
+  $('pf-a').textContent=(u.age||'—')+' yaş';
+  $('pf-g').textContent=u.gender==='female'?'Kadın ♀':'Erkek ♂';
+  $('pf-goal').value=S.goal||'lose';
+  $('pf-tot').textContent=(S.history?.length||0)+' tarama';
+  ['veg','vegan','gluten','lactose'].forEach(p=>{ const el=$('tog-'+p); if(el)el.classList.toggle('on',(S.prefs||{})[p]||false); });
+  if(S.apiKey){ const ki=$('key-input'); if(ki)ki.value=S.apiKey; }
+}
+function saveGoal(){ S.goal=document.getElementById('pf-goal').value; curGoal=S.goal; syncChips(); updDesc(); sv(); renderSettings(); showToast('✦ Hedef güncellendi'); }
+function tPref(k){ S.prefs=S.prefs||{}; S.prefs[k]=!S.prefs[k]; sv(); renderSettings(); }
+function saveKey(){
+  const v=$('key-input').value.trim();
+  if(!v){ showToast('API key boş olamaz','warn'); return; }
+  if(!v.startsWith('sk-ant')){ showToast('Geçersiz format. sk-ant... ile başlamalı','warn'); return; }
+  S.apiKey=v; sv(); checkKeyBanner(); showToast('✓ API key kaydedildi!');
+}
+async function testKey(){
+  if(!S.apiKey){ showToast('Önce kaydet','warn'); return; }
+  showToast('🔄 Test ediliyor...','info');
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:10,messages:[{role:'user',content:'hi'}]})});
+    if(r.ok)showToast('✓ API key çalışıyor!');
+    else showToast('⚠️ Geçersiz API key','warn');
+  }catch(e){ showToast('⚠️ Bağlantı hatası','warn'); }
+}
+function resetAll(){ if(confirm('Tüm veriler (API key dahil) silinecek?')){ localStorage.removeItem('ms_v3'); location.reload(); } }
+
+/* ── SHARE ── */
+function doShare(name,kcal){ const t=`MenuScan AI ile ${name} yemeğinin ${kcal||'?'} kalori içerdiğini öğrendim! 🍽️✦`; if(navigator.share)navigator.share({title:'MenuScan Analizi',text:t});else{cpTxt(t);showToast('📋 Panoya kopyalandı');} }
+function doCopy(name,kcal){ cpTxt(`${name} → ${kcal||'?'} kcal (MenuScan AI)`); showToast('📋 Kopyalandı!'); }
+function cpTxt(t){ try{navigator.clipboard.writeText(t);}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);} }
+function shareApp(){ const t='Restoran menüsünü fotoğrafla, AI en sağlıklı yemeği söylesin! 🍽️ MenuScan'; if(navigator.share)navigator.share({title:'MenuScan',text:t});else{cpTxt('MenuScan — AI Menü Analizi');showToast('📋 Kopyalandı');} }
+
+/* ── NAV ── */
+function goPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  $('page-'+name)?.classList.add('on');
+  $('nb-'+name)?.classList.add('on');
+  if(name==='history')renderHistory();
+  if(name==='settings')renderSettings();
+  if(name==='premium')renderPremium();
+}
+
+/* ── MODAL ── */
+function openModal(){ $('modal').classList.add('open'); }
+function closeModal(){ $('modal').classList.remove('open'); }
+
+/* ── TOAST ── */
+let tT;
+function showToast(msg,type=''){
+  const t=$('toast');
+  t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* ── INIT ── */
+ld();
+if(S.user){ launchApp(); }
+// else show landing page (already visible by default)
+</script>
+
+<!-- iOS PWA Install Banner -->
+<div id="ios-banner" style="display:none;position:fixed;bottom:96px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;z-index:800;padding:14px 16px;background:rgba(9,9,15,.96);backdrop-filter:blur(40px);border:1px solid rgba(245,197,24,.22);border-radius:22px;box-shadow:0 16px 48px rgba(0,0,0,.6)">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#f5c518,#ff8c3a);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🍽️</div>
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:700;color:#f0f0ff">MenuScan'i Ana Ekrana Ekle</div>
+      <div style="font-size:11px;color:rgba(240,240,255,.5);margin-top:2px">Safari'de <b style="color:#f5c518">Paylaş →</b> sonra <b style="color:#f5c518">Ana Ekrana Ekle</b></div>
+    </div>
+    <button onclick="document.getElementById('ios-banner').style.display='none';localStorage.setItem('iosDismissed','1')" style="background:none;border:none;color:rgba(240,240,255,.3);font-size:20px;cursor:pointer;padding:4px;line-height:1">✕</button>
+  </div>
+</div>
+
+<script>
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// iOS install banner
+(function(){
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const dismissed = localStorage.getItem('iosDismissed');
+  if (isIos && !isStandalone && !dismissed) {
+    setTimeout(() => {
+      document.getElementById('ios-banner').style.display = 'block';
+    }, 4000);
+  }
+})();
+
+// Android install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show custom install button if needed
+});
+</script>
+</body>
+</html>

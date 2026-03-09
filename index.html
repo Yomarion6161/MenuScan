@@ -1098,10 +1098,14 @@ if(S.user){ launchApp(); }
 </div>
 
 <script>
-// Service Worker
+// Unregister any old service workers
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/MenuScan/sw.js', {scope: '/MenuScan/'}).catch(() => {});
+  // Unregister any old service workers that might cause 404
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
+  });
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
   });
 }
 

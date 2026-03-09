@@ -643,17 +643,18 @@ input[type=number]::-webkit-inner-spin-button{display:none}
       <div class="p-nm" id="pf-nm">—</div>
       <div class="p-badge" id="pf-badge">🔥 Kilo Ver</div>
     </div>
-    <!-- API Status -->
+    <!-- AI Status -->
     <div class="g sc">
       <div class="gs"></div>
       <div class="s-lbl">AI Bağlantısı</div>
-      <div style="font-size:11px;color:var(--dim);line-height:1.55;margin-bottom:9px">Claude API key'ini gir. <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold);text-decoration:none">console.anthropic.com</a>'dan ücretsiz al.</div>
-      <div class="key-row">
-        <input id="key-input" type="password" placeholder="sk-ant-api03-...">
-        <button onclick="togKeyVis('key-input',this)">👁</button>
-        <button onclick="testKey()" style="padding:8px 10px;font-size:12px">✓</button>
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:rgba(45,209,122,.07);border:1px solid rgba(45,209,122,.18);border-radius:14px">
+        <div style="font-size:20px">🤖</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#f0f0ff">Claude AI Bağlı</div>
+          <div style="font-size:11px;color:rgba(240,240,255,.5);margin-top:2px">Tüm analizler güvenli sunucumuzdan yapılıyor</div>
+        </div>
+        <div style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:#2dd17a;box-shadow:0 0 8px #2dd17a"></div>
       </div>
-      <button class="save-key-btn" onclick="saveKey()">API Key'i Kaydet</button>
     </div>
     <!-- Prefs -->
     <div class="g sc">

@@ -1,10 +1,10 @@
-const CACHE = 'menuscan-v1';
+const CACHE = 'menuscan-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/MenuScan/',
+  '/MenuScan/index.html',
+  '/MenuScan/manifest.json',
+  '/MenuScan/icon-192.png',
+  '/MenuScan/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
@@ -22,9 +22,9 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // API calls — always network
   if (e.request.url.includes('anthropic.com')) return;
   if (e.request.url.includes('fonts.googleapis.com')) return;
+  if (e.request.url.includes('vercel.app')) return;
 
   e.respondWith(
     caches.match(e.request).then(cached => {
@@ -34,7 +34,7 @@ self.addEventListener('fetch', e => {
         const clone = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, clone));
         return res;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => caches.match('/MenuScan/index.html'));
     })
   );
 });

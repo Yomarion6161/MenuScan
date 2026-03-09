@@ -523,7 +523,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
     </div>
 
     <!-- No key warning -->
-    <div class="g no-key" id="no-key-banner" style="display:none">
+    <div class="g no-key" id="no-key-banner" style="display:none !important">
       <div class="gs"></div>
       <div class="no-key-ic">🔑</div>
       <div class="no-key-t"><b>API Key Gerekli</b>Analiz yapabilmek için Claude API key'ini ekle.</div>
@@ -643,7 +643,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
       <div class="p-nm" id="pf-nm">—</div>
       <div class="p-badge" id="pf-badge">🔥 Kilo Ver</div>
     </div>
-    <!-- API Key -->
+    <!-- API Status -->
     <div class="g sc">
       <div class="gs"></div>
       <div class="s-lbl">AI Bağlantısı</div>
@@ -758,7 +758,7 @@ function launchApp(){
   $('app').style.display='flex'; $('nav').style.display='flex';
   curGoal=S.goal||'lose'; curAl=[...(S.allergens||[])];
   syncChips(); syncAlChips(); updDesc(); updCounter();
-  checkKeyBanner();
+  // No API key needed - backend handles it
   renderSettings(); renderPremium();
 }
 
@@ -1034,7 +1034,7 @@ function saveKey(){
   const v=$('key-input').value.trim();
   if(!v){ showToast('API key boş olamaz','warn'); return; }
   if(!v.startsWith('sk-ant')){ showToast('Geçersiz format. sk-ant... ile başlamalı','warn'); return; }
-  S.apiKey=v; sv(); checkKeyBanner(); showToast('✓ API key kaydedildi!');
+  S.apiKey=v; sv(); // No API key needed - backend handles it showToast('✓ API key kaydedildi!');
 }
 async function testKey(){
   if(!S.apiKey){ showToast('Önce kaydet','warn'); return; }

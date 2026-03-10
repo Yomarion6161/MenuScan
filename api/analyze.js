@@ -7,6 +7,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
+    console.log('Body:', JSON.stringify(req.body).substring(0, 200));
+    console.log('API Key exists:', !!process.env.ANTHROPIC_API_KEY);
     const { imageBase64, mimeType, goal, allergens } = req.body;
 
     if (!imageBase64 || !mimeType || !goal) {

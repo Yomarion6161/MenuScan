@@ -1,3 +1,11 @@
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -7,12 +15,13 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    console.log('Body:', JSON.stringify(req.body).substring(0, 200));
     console.log('API Key exists:', !!process.env.ANTHROPIC_API_KEY);
+    console.log('Body keys:', Object.keys(req.body || {}));
+
     const { imageBase64, mimeType, goal, allergens } = req.body;
 
     if (!imageBase64 || !mimeType || !goal) {
-      return res.status(400).json({ error: 'Eksik parametreler' });
+      return res.status(400).json({ error: 'Eksik parametreler: ' + JSON.stringify({ imageBase64: !!imageBase64, mimeType, goal }) });
     }
 
     const goalMap = {
@@ -38,16 +47,20 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-opus-4-5',
         max_tokens: 2000,
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: mimeType, data: imageBase64 } },
-          { type: 'text', text: prompt }
-        ]}]
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mimeType, data: imageBase64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
       })
     });
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      return res.status(500).json({ error: err.error?.message || 'API hatası' });
+      console.log('Anthropic error:', JSON.stringify(err));
+      return res.status(500).json({ error: err.error?.message || 'API hatası: ' + response.status });
     }
 
     const data = await response.json();
@@ -59,6 +72,7 @@ export default async function handler(req, res) {
     return res.status(200).json(parsed);
 
   } catch (err) {
+    console.log('Catch error:', err.message);
     return res.status(500).json({ error: err.message || 'Sunucu hatası' });
   }
 }

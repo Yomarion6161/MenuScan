@@ -835,7 +835,23 @@ async function doScan(){
   }
 }
 
-const toB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f);});
+const toB64=f=>new Promise((res,rej)=>{
+  const img=new Image();
+  const url=URL.createObjectURL(f);
+  img.onload=()=>{
+    const MAX=1200;
+    let w=img.width,h=img.height;
+    if(w>MAX||h>MAX){const s=Math.min(MAX/w,MAX/h);w=Math.round(w*s);h=Math.round(h*s);}
+    const c=document.createElement('canvas');
+    c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    URL.revokeObjectURL(url);
+    const b64=c.toDataURL('image/jpeg',0.82).split(',')[1];
+    res(b64);
+  };
+  img.onerror=rej;
+  img.src=url;
+});
 
 /* ── CLAUDE API ── */
 async function callClaude(b64,mime){
@@ -884,7 +900,7 @@ Kurallar: Menü değilse {"error":"..."} döndür. Max 9 yemek. Tüm metinler T�
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       imageBase64: b64,
-      mimeType: mime,
+      mimeType: 'image/jpeg',
       goal: curGoal,
       allergens: curAl
     })

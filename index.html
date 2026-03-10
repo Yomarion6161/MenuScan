@@ -882,14 +882,16 @@ Kurallar: Menü değilse {"error":"..."} döndür. Max 9 yemek. Tüm metinler T�
   const resp=await fetch('https://menu-scan-dusky.vercel.app/api/analyze',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mime,data:b64}},{type:'text',text:prompt}]}]})
+    body:JSON.stringify({
+      imageBase64: b64,
+      mimeType: mime,
+      goal: curGoal,
+      allergens: curAl
+    })
   });
 
   if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.error?.message||'HTTP '+resp.status); }
-  const data=await resp.json();
-  const txt=data.content.map(b=>b.text||'').join('');
-  const clean=txt.replace(/```json|```/g,'').trim();
-  const parsed=JSON.parse(clean);
+  const parsed=await resp.json();
   if(parsed.error)throw new Error(parsed.error);
   return parsed;
 }

@@ -322,7 +322,7 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--text);min
 .p-av{width:78px;height:78px;border-radius:24px;margin:0 auto 11px;background:var(--gg);display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 16px 44px rgba(245,197,24,.28),0 0 0 1px rgba(255,255,255,.09)}
 .p-nm{font-size:21px;font-weight:800;letter-spacing:-.8px}
 .p-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:var(--golda);border:1px solid rgba(245,197,24,.22);border-radius:18px;padding:4px 12px;font-size:10px;color:var(--gold);font-weight:700}
-/* API key settings */
+/* API key settings */ .api-key-section { display: none !important; }
 .key-row{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;margin-top:6px}
 .key-row input{flex:1;padding:10px 12px;background:transparent;border:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;min-width:0}
 .key-row button{padding:8px 12px;background:none;border:none;cursor:pointer;color:var(--faint);font-size:15px;transition:color .2s;flex-shrink:0}
@@ -774,7 +774,7 @@ function syncChips(){ document.querySelectorAll('.chip[data-g]').forEach(c=>c.cl
 function syncAlChips(){ document.querySelectorAll('.al[data-al]').forEach(c=>c.classList.toggle('on',curAl.includes(c.dataset.al))); }
 function checkKeyBanner(){
   const banner=$('no-key-banner');
-  if(banner) banner.style.display=S.apiKey?'none':'flex';
+  if(banner) banner.style.display='none';
 }
 
 /* ── SCAN CONTROLS ── */
@@ -797,7 +797,7 @@ function onFile(inp){
 /* ── DO SCAN ── */
 async function doScan(){
   if(!selFile){ showToast('Önce bir menü fotoğrafı seç','warn'); return; }
-  if(!S.apiKey){ showToast('⚠️ Önce API key ekle → Ayarlar','warn'); goPage('settings'); return; }
+  // API key backend'de - devam et
   if(!S.isPremium&&(S.scansUsed||0)>=5){ showToast('⚠️ Aylık limitin doldu! Premium\'a geç.','warn'); goPage('premium'); return; }
 
   const lo=$('load-ov');
@@ -879,9 +879,9 @@ SADECE şu JSON formatında yanıt ver (başka hiçbir şey yazma):
 
 Kurallar: Menü değilse {"error":"..."} döndür. Max 9 yemek. Tüm metinler Türkçe.`;
 
-  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+  const resp=await fetch('https://menu-scan-dusky.vercel.app/api/analyze',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mime,data:b64}},{type:'text',text:prompt}]}]})
   });
 
@@ -1041,7 +1041,7 @@ async function testKey(){
   if(!S.apiKey){ showToast('Önce kaydet','warn'); return; }
   showToast('🔄 Test ediliyor...','info');
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:10,messages:[{role:'user',content:'hi'}]})});
+    const r=await fetch('https://menu-scan-dusky.vercel.app/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:10,messages:[{role:'user',content:'hi'}]})});
     if(r.ok)showToast('✓ API key çalışıyor!');
     else showToast('⚠️ Geçersiz API key','warn');
   }catch(e){ showToast('⚠️ Bağlantı hatası','warn'); }

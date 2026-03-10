@@ -1,6 +1,6 @@
 {
-  "name": "menuscan-api",
+  "name": "menuscan",
   "version": "1.0.0",
-  "description": "MenuScan AI Backend API",
-  "private": true
+  "type": "module",
+  "dependencies": {}
 }
